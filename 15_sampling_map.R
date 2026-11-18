@@ -56,6 +56,15 @@
 # USER INPUT
 # =============================================================================
 
+
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Extracts NH1208 station coordinates and region assignments from the processed Chapter 1 dataset.
+# - Adds major North Pacific surface-current geometry and land boundaries to provide oceanographic context for the transect.
+# - Uses manually positioned broad-region/current labels for visualization; these labels are not analytical boundaries.
+# - Saves the publication map showing sampling stations, oceanographic regions, and major circulation features.
+# -----------------------------------------------------------------------------
+
 source("R_Scripts/00_setup.R", local = TRUE)
 DATA_CSV <- file.path(OUT_DIR, "data_gradients.csv")
 PLOT_DIR <- PLOT_DIRS[["Map"]]

@@ -7,6 +7,16 @@
 # Outputs: Cluster assignments, model objects, and regional summaries.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Restricts clustering to validated NH1208 Calanoida observations.
+# - Fits the final six-morphotype K-means solution using the fixed 20-descriptor set selected upstream.
+# - Converts numeric cluster IDs into the ecological labels ST, SD, MT, MD, LT, and LD using transparency and body-size summaries.
+# - Fits the separate two-cluster Small/Large comparison using the full 43-descriptor transformed morphology set.
+# - Removes the Subarctic ST node only after labels are assigned, so all downstream clustered analyses use the requested exclusion consistently.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 library(readr)

@@ -14,6 +14,16 @@
 
 # ---- USER INPUT ----
 # Paths come from 00_setup.R; the original processing logic below is retained.
+
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Reads the raw EcoTaxa export and parses object identifiers into cruise, MOCNESS tow, net, fraction, and scan fields.
+# - Applies the project-specific sampled-volume corrections before calculating organism density and vertically integrated abundance.
+# - Assigns day/night status, station, and oceanographic region metadata to each observation.
+# - Reads CTD casts, associates stations with the appropriate environmental profiles, and summarizes CTD variables over the MOCNESS depth intervals.
+# - Merges the resulting environmental information back onto the organism-level EcoTaxa table used by all later scripts.
+# -----------------------------------------------------------------------------
+
 source("R_Scripts/00_setup.R", local = TRUE)
 OUT_CSV <- file.path(OUT_DIR, "data_gradients.csv")
 # ---- packages ----

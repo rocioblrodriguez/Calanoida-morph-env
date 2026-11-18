@@ -7,6 +7,15 @@
 # Outputs: Calanoida_data.csv, pca_results.rds, eigenvalue/trait tables and plots.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Fits one pooled abundance-weighted PCA that is reused by the PCA plotting scripts.
+# - Morphological rows are multiplied by sqrt(abundance) before PCA, preserving the weighting approach used in the original analysis.
+# - Exports eigenvalues, retained-axis information, coordinates, cos2 values, and variable contributions for PC1-PC4.
+# - Produces diagnostic plots describing explained variance and the morphological descriptors associated with the principal axes.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["PCA_statistics"]]

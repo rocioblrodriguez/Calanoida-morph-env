@@ -7,6 +7,15 @@
 # Outputs: outputs/ and plots/, plus a record of R and package versions.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Defines the intended dependency order for the complete Chapter 1 analysis.
+# - Executes each numbered script in a clean local environment so temporary objects do not leak between steps.
+# - Stops immediately if a script fails, preventing later outputs from being generated from an incomplete run.
+# - Records session information at the end so the software environment used for the run can be documented.
+# -----------------------------------------------------------------------------
+
+
 # 1. Execution order ----------------------------------------------------------
 # The scripts are numbered in dependency order. This explicit list excludes
 # this runner, setup, and optional installation steps.

@@ -28,6 +28,15 @@
 # =============================================================================
 
 # 1. USER SETTINGS ------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Builds latitude-depth sections for temperature, fluorescence, dissolved oxygen, and salinity separately for each cruise.
+# - Uses the station/net CTD means already generated in script 01, after removing organism-level repetition so image abundance does not weight the environment.
+# - Interpolates first through depth and then across station latitude only within sampled coverage.
+# - Overlays sampling locations colored by region and uses fixed environmental scales to support comparison between cruises.
+# -----------------------------------------------------------------------------
+
 source("R_Scripts/00_setup.R", local = TRUE)
 INPUT_CSV <- file.path(OUT_DIR, "data_gradients.csv")
 PLOT_DIR <- PLOT_DIRS[["Environmental_sections"]]

@@ -7,6 +7,15 @@
 # Outputs: Correlation figure, matrices, both predictor tests, and link tables.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Calculates abundance-weighted Region x Cluster morphological centroids from the 43 transformed descriptors.
+# - Uses centroid correlations to describe morphological similarity among occupied nodes.
+# - Reuses the daytime node-level RDA statistics from script 10 to connect environmental effects with those morphological nodes.
+# - Exports the correlation matrices, predictor-test tables, environmental-link data, and the final combined visualization.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["Centroid_environment_links"]]
@@ -14,8 +23,6 @@ library(readr)
 library(dplyr)
 library(tidyr)
 library(tibble)
-library(purrr)
-library(vegan)
 library(Hmisc)
 library(ggcor)
 library(ggplot2)
@@ -82,152 +89,31 @@ if (length(missing_nodes)) {
 node_matrix <- node_matrix[, expected_nodes, drop = FALSE]
 write_csv(centroids, file.path(OUT_DIR, "morphological_centroids_cluster_region.csv"))
 
-# 3. Refit the working daytime node RDAs used by the original script 11 --------
-# Environmental variables are standardized across the same filtered dataset
-# used for this figure. Morphology is multiplied by sqrt(abundance), while the
-# environmental predictors remain unweighted.
-env_std <- paste0(ENV_RAW, "_std")
-dat <- dat |>
-  mutate(across(all_of(ENV_RAW), ~ as.numeric(scale(.x)), .names = "{.col}_std"))
-
-dat_rda <- dat |>
-  filter(D_N == "D")
-
-if (!nrow(dat_rda)) {
-  stop("No daytime rows are available for the environmental links.")
-}
-
-safe_adjR2 <- function(fit) {
-  tryCatch(
-    as.numeric(vegan::RsquareAdj(fit)$adj.r.squared),
-    error = function(e) NA_real_
-  )
-}
-
-fit_one_node <- function(region_name, cluster_name) {
-  node_data <- dat_rda |>
-    filter(Region == region_name, Cluster == cluster_name) |>
-    select(abundance, all_of(MORPH_VARIABLES), all_of(env_std)) |>
-    drop_na() |>
-    filter(is.finite(abundance), abundance > 0)
-
-  if (nrow(node_data) < length(env_std) + 5L) {
-    message(
-      "Skipping RDA for ", cluster_name, "_", region_name,
-      ": too few complete daytime rows (n = ", nrow(node_data), ")."
-    )
-    return(NULL)
-  }
-
-  Y <- as.matrix(node_data[, MORPH_VARIABLES, drop = FALSE])
-  Y_weighted <- sweep(Y, 1, sqrt(node_data$abundance), FUN = "*")
-  X <- as.data.frame(node_data[, env_std, drop = FALSE])
-
-  fit_full <- vegan::rda(Y_weighted ~ ., data = X, scale = TRUE)
-  full_adj_R2 <- safe_adjR2(fit_full)
-
-  marginal_test <- suppressWarnings(
-    vegan::anova.cca(fit_full, by = "margin", permutations = N_PERM)
-  )
-  marginal_p <- tibble(
-    predictor = rownames(marginal_test),
-    p.value = as.numeric(marginal_test$`Pr(>F)`)
-  ) |>
-    filter(predictor %in% env_std)
-
-  purrr::map_dfr(env_std, function(predictor_name) {
-    reduced_predictors <- setdiff(env_std, predictor_name)
-    fit_reduced <- vegan::rda(
-      Y_weighted ~ .,
-      data = X[, reduced_predictors, drop = FALSE],
-      scale = TRUE
-    )
-    reduced_adj_R2 <- safe_adjR2(fit_reduced)
-    unique_adj_R2 <- full_adj_R2 - reduced_adj_R2
-
-    tibble(
-      Region = region_name,
-      Cluster = cluster_name,
-      node = paste(cluster_name, region_name, sep = "_"),
-      predictor = predictor_name,
-      environment = sub("_std$", "", predictor_name),
-      n_rows = nrow(node_data),
-      full_adj_R2 = full_adj_R2,
-      reduced_adj_R2 = reduced_adj_R2,
-      unique_adj_R2 = unique_adj_R2,
-      full_model_pct_total = 100 * full_adj_R2,
-      unique_pct_total = 100 * unique_adj_R2,
-      effect_pct = 100 * unique_adj_R2
-    )
-  }) |>
-    left_join(marginal_p, by = "predictor")
-}
-
-links <- purrr::map_dfr(REGION_LEVELS, function(region_name) {
-  purrr::map_dfr(NODE_CLUSTER_LEVELS, function(cluster_name) {
-    if (region_name == "Subarctic" && cluster_name == "ST") return(NULL)
-    fit_one_node(region_name, cluster_name)
-  })
-}) |>
-  mutate(test_used_for_plot = ENV_LINK_TEST)
-
-if (!nrow(links)) {
-  stop("No node-specific daytime RDA models could be fitted.")
-}
-
-write_csv(
-  links,
-  file.path(OUT_DIR, "node_environment_links_all_unique_effects_abundance_weighted.csv")
-)
+# 3. Export both predictor tests from the same daytime RDA models ---------------
+# Script 10 fitted and tested these exact models. Reuse its results to prevent
+# p-values or effect definitions from drifting between the table and figure.
+rda <- readRDS(file.path(OUT_DIR, "rda_results.rds"))
+tests <- bind_rows(lapply(rda$nodes, function(x) x$terms))
+effects <- bind_rows(lapply(rda$nodes, function(x) x$effects))
+write_csv(tests, file.path(OUT_DIR, "node_RDA_predictor_tests_sequential_and_marginal.csv"))
+links <- effects |>
+  mutate(node = Group, environment = sub("_std$", "", predictor),
+         p.value = .data[[paste0("p_", ENV_LINK_TEST)]],
+         effect_pct = unique_pct_total, test_used_for_plot = ENV_LINK_TEST)
+write_csv(links, file.path(OUT_DIR, "node_environment_links_all_unique_effects_abundance_weighted.csv"))
 
 # Rank significant positive effects independently within each region × cluster.
-# These are the same selection rules as the working script 11.
+# The signed unique adjusted R² values remain available in the complete table.
 selected_links <- links |>
-  filter(
-    !is.na(p.value),
-    p.value <= ENV_LINK_ALPHA,
-    is.finite(effect_pct),
-    effect_pct > 0
-  ) |>
+  filter(p.value <= ENV_LINK_ALPHA, effect_pct > 0) |>
   group_by(Region, Cluster) |>
   arrange(desc(effect_pct), p.value, environment, .by_group = TRUE) |>
   slice_head(n = TOP_ENV_LINKS) |>
   mutate(link_rank = row_number()) |>
   ungroup() |>
-  mutate(
-    .row = unname(c(
-      Temp = "Temperature", Sal = "Salinity",
-      O2 = "Oxygen", Fluor = "Fluorescence"
-    )[environment]),
-    .col = node
-  ) |>
-  # ggcor::anno_link() uses the first two columns as its link endpoints.
-  # Keep .row (environment) and .col (cluster-region node) first, exactly as
-  # in the working script 11. Otherwise Region and Cluster are misread as the
-  # endpoints, producing region labels in the triangle and no visible links.
-  select(.row, .col, everything())
-
-if (!identical(names(selected_links)[1:2], c(".row", ".col"))) {
-  stop("Environmental link endpoint columns are not in the required order.")
-}
-
-write_csv(
-  selected_links,
-  file.path(OUT_DIR, "node_environment_links_top2_significant_abundance_weighted.csv")
-)
-
-message("All daytime node RDA effects: ", nrow(links))
-message("Significant positive links selected for plotting: ", nrow(selected_links))
-print(selected_links |>
-        select(Region, Cluster, link_rank, environment, effect_pct, p.value))
-
-if (!nrow(selected_links)) {
-  stop(
-    "No significant positive environmental links passed p <= ",
-    ENV_LINK_ALPHA,
-    ". Inspect node_environment_links_all_unique_effects_abundance_weighted.csv."
-  )
-}
+  mutate(.row = unname(c(Temp = "Temperature", Sal = "Salinity", O2 = "Oxygen", Fluor = "Fluorescence")[environment]),
+         .col = node)
+write_csv(selected_links, file.path(OUT_DIR, "node_environment_links_top2_significant_abundance_weighted.csv"))
 
 # 4. Calculate Pearson correlations and their reported p-values ----------------
 correlations <- rcorr(node_matrix, type = "pearson")

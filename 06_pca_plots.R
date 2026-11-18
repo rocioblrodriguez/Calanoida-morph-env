@@ -7,6 +7,15 @@
 #          Shared paths/colors, PNG/PDF/SVG export, and plain panel tags.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Uses the PCA object saved by script 05; no PCA is refitted here.
+# - Calculates abundance-weighted cluster/region centroids in PCA space and overlays organism icons scaled by mean ESD.
+# - Produces pooled and regional views for the requested PC-axis combinations using consistent cluster colors and region symbols.
+# - Saves individual panels and combined figures in the project figure formats.
+# -----------------------------------------------------------------------------
+
+
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["PCA_6clusters"]]
 library(dplyr)
@@ -129,7 +138,7 @@ save_region_pca_pair <- function(x_dim, y_dim) {
     
     p_reg_pair <- ggplot(cal_reg, aes(x = .data[[x_pc]], y = .data[[y_pc]])) +
       geom_point(
-        aes(fill = Cluster), shape = 21, size = 2.5, stroke = 0.1,
+        aes(fill = Cluster), shape = 21, size = 2.5, stroke = 0.4,
         color = "black", show.legend = TRUE
       ) +
       ggimage::geom_image(
@@ -276,7 +285,7 @@ combined_all_regions <- (
 
 save_plot_formats(
   filename = file.path(PLOT_DIR, "pca_clusters_Calanoida_allRegions_allPairs_combined.png"),
-  plot = combined_all_regions, width = 16, height = 10, dpi = 300
+  plot = combined_all_regions, width = 25, height = 16, dpi = 300
 )
 
 message("Done!")

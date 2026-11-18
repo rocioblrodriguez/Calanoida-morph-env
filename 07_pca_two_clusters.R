@@ -7,6 +7,14 @@
 #          Shared paths/colors, PNG/PDF/SVG export, and plain panel tags.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Reuses the pooled PCA coordinates from script 05 and the independent Small/Large assignments from script 03.
+# - Displays the same PCA morphospace under the two-cluster comparison without altering the six-morphotype solution.
+# - Produces all requested axis-pair panels and a combined figure with shared cluster and region legends.
+# -----------------------------------------------------------------------------
+
+
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["PCA_2clusters"]]
 library(readr)

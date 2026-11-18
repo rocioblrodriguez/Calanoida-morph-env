@@ -5,6 +5,15 @@
 #          Sources 00_setup.R settings; no input repair or missing-data fallbacks.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Contains reusable utility functions shared by multiple analysis and figure scripts.
+# - Figure helpers save equivalent output formats and scale organism icons consistently across panels.
+# - RDA helpers implement the project-specific abundance transformation, permutation tests, and adjusted-R2 environmental effect calculations.
+# - Functions here do not independently read or alter the analysis dataset.
+# -----------------------------------------------------------------------------
+
+
 # 1. Figure exports -----------------------------------------------------------
 # Preserve the source plot's dimensions, background, dpi, and device arguments.
 # A PNG call creates matching PDF, SVG, and EPS copies. Formats can be restricted for

@@ -7,6 +7,15 @@
 # Outputs: Maxima/frequency tables and silhouette-profile figures.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Summarizes the archived 1,000-iteration K-means diagnostic table generated upstream.
+# - Identifies the global silhouette maximum in each iteration and the first later internal local maximum, when present.
+# - Counts how frequently each k is selected under those two criteria and reproduces the diagnostic frequency/profile plots.
+# - This script describes the archived diagnostics only; it does not rerun K-means or select the final 20-variable set.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["Silhouette"]]

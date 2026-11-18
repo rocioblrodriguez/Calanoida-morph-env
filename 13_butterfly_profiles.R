@@ -7,6 +7,15 @@
 #          Shared paths/colors, PNG/PDF/SVG export, and plain panel tags.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Reads the resident/migrator depth profiles saved by script 09 rather than recalculating behavior classifications.
+# - Converts each Region x Cluster profile to relative abundance across depth for the mirrored day/night butterfly display.
+# - Day and night are plotted on opposite sides of zero, while pattern distinguishes residents from migrators.
+# - Produces one profile figure per region and a combined figure with a single shared legend.
+# -----------------------------------------------------------------------------
+
+
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["Butterfly"]]
 library(dplyr)

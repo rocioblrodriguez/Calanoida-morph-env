@@ -7,6 +7,15 @@
 # Outputs: RDA tables and rda_results.rds, reused by scripts 11 and 12.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Fits morphology-environment RDA models from the common clustered Calanoida dataset.
+# - Community and regional models are evaluated for Day, Night, and combined DayNight subsets; Region x Cluster node models use daytime observations only.
+# - For each model, exports overall fit statistics, constrained-axis variance, sequential and marginal permutation tests, and adjusted-R2 environmental effects.
+# - The saved model object is the single source used by scripts 11 and 12, avoiding refitting or inconsistencies between statistics and figures.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 library(readr)

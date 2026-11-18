@@ -8,6 +8,15 @@
 # Source:  08.Behavior_mig&res_plots(1).R
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Converts day/night vertical abundance profiles into resident and migrator components for each Region x Cluster group.
+# - Calculates weighted mean depth (WMD) and the original SE-based uncertainty intervals for the behavior summaries.
+# - Summarizes resident/migrator proportions and migrator DVM amplitude from the day-night WMD difference.
+# - Produces the resident/migrator proportion, WMD, and DVM panels and saves intermediate behavior results for the butterfly profiles in script 13.
+# -----------------------------------------------------------------------------
+
+
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["Behavior"]]
 

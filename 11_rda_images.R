@@ -7,6 +7,15 @@
 #          Shared paths/colors, PNG/PDF/SVG export, and plain panel tags.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Uses only the RDA models already fitted and saved by script 10.
+# - Builds morphospace panels with representative organism images, abundance-weighted node centroids, morphological loading labels, and environmental vectors.
+# - Generates regional and Region x Cluster daytime panels without changing the underlying model fits.
+# - Saves the individual panels and the original combined figure layouts in multiple graphics formats.
+# -----------------------------------------------------------------------------
+
+
 source("R_Scripts/00_setup.R", local = TRUE)
 PLOT_DIR <- PLOT_DIRS[["RDA"]]
 library(readr)

@@ -7,6 +7,15 @@
 # Output:  outputs/data_var.csv; outputs/yeojohnson_transformations.rds
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Starts from the processed organism-level table created in script 01.
+# - Standardizes the environmental predictors used later in RDA so they are expressed on comparable scales.
+# - Applies a Yeo-Johnson transformation to each selected morphological descriptor while retaining the original raw variables.
+# - Saves both the transformed dataset and fitted transformation objects for reproducibility.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 library(readr)

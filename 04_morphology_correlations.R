@@ -7,6 +7,15 @@
 # Output:  outputs/cor_all_morph_vars_YJ.csv
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Uses validated clustered NH1208 Calanoida observations.
+# - Calculates pairwise Pearson correlations among the transformed ZooProcess descriptors as a morphology diagnostic.
+# - This diagnostic intentionally includes the broader transformed descriptor set rather than only the 43 variables used in the main clustering analysis.
+# - Exports the correlation matrix in a table format that can be inspected independently of the plotting workflow.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 library(readr)

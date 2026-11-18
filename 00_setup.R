@@ -6,6 +6,15 @@
 #          shared by the CHP1 scripts. Run from the revised analysis folder.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Centralizes project paths, analysis constants, descriptor groups, cluster/region ordering, colors, and icon locations.
+# - All downstream scripts source this file so shared definitions remain consistent across analyses and figures.
+# - Morphological descriptor categories defined here are descriptive groupings used throughout the workflow.
+# - This script defines settings only; it does not fit models or modify the input observations.
+# -----------------------------------------------------------------------------
+
+
 # 1. Project paths ------------------------------------------------------------
 # Set the working directory to:
 # /Users/rociorodriguez/Git_work/CHP1/Final_R/CHP1_revised_scripts
@@ -105,16 +114,16 @@ ALL_MORPH_RAW <- c(
 # silhouette analysis. The plotting scripts never select variables.
 CLUSTERING_GROUPS <- list(
   Size = c(
-    "area", "minor", "esd", "major", "area_exc"
+    "area", "feret", "major", "esd", "area_exc"
   ),
   Transparency = c(
-    "intden", "kurt", "mean", "meanpos", "mode"
+    "max", "nb1", "kurt", "skew", "stddev"
   ),
   Shape = c(
-    "thickr", "symetriev", "perim.", "symetriehc", "symetrievc"
+    "symetrieh", "elongation", "convperim", "perim.", "symetriev"
   ),
   Complexity = c(
-    "feretareaexc", "slope", "perimareaexc", "fcons", "fractal"
+    "fractal", "feretareaexc", "perimmajor", "slope", "fcons"
   )
 )
 
@@ -122,6 +131,7 @@ CLUSTERING_VARIABLES <- paste0(
   unlist(CLUSTERING_GROUPS, use.names = FALSE),
   "_YJ"
 )
+
 # Net intervals are shared by processing, behavior, and environmental sections.
 # Behavior and butterfly figures retain their original net-depth codes.
 # Midpoints are used by the environmental sections.

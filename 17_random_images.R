@@ -7,6 +7,15 @@
 # Outputs: Copied JPGs, a selection manifest, and group counts in outputs/.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Workflow notes:
+# - Samples representative organism images from each available Region x Cluster combination in the clustered Calanoida dataset.
+# - Uses the EcoTaxa image directory defined in setup to locate and copy the selected JPG files.
+# - Saves a manifest linking selected observations to copied images and exports group counts so image availability can be checked.
+# - Random selection follows the project seed/settings defined in the shared setup.
+# -----------------------------------------------------------------------------
+
+
 # 1. Settings and packages -----------------------------------------------------
 source("R_Scripts/00_setup.R", local = TRUE)
 library(readr)
