@@ -114,16 +114,16 @@ ALL_MORPH_RAW <- c(
 # silhouette analysis. The plotting scripts never select variables.
 CLUSTERING_GROUPS <- list(
   Size = c(
-    "area", "feret", "major", "esd", "area_exc"
+    "area_exc", "esd", "convarea", "feret", "skelarea"
   ),
   Transparency = c(
-    "max", "nb1", "kurt", "skew", "stddev"
+    "histcum1", "meanpos", "intden", "skew", "nb2"
   ),
   Shape = c(
-    "symetrieh", "elongation", "convperim", "perim.", "symetriev"
+    "perim.", "cdexc", "circex", "symetriev", "convperim"
   ),
   Complexity = c(
-    "fractal", "feretareaexc", "perimmajor", "slope", "fcons"
+    "slope", "perimferet", "fractal", "fcons", "feretareaexc"
   )
 )
 
@@ -131,7 +131,6 @@ CLUSTERING_VARIABLES <- paste0(
   unlist(CLUSTERING_GROUPS, use.names = FALSE),
   "_YJ"
 )
-
 # Net intervals are shared by processing, behavior, and environmental sections.
 # Behavior and butterfly figures retain their original net-depth codes.
 # Midpoints are used by the environmental sections.
