@@ -69,8 +69,8 @@ centroids <- dat |>
 node_matrix <- centroids |>
   select(node, all_of(MORPH_VARIABLES)) |>
   column_to_rownames("node") |>
-  as.matrix() |>
-  t()
+  t() |>
+  as.data.frame(check.names = FALSE)
 
 # Preserve the original node arrangement while excluding ST only in Subarctic.
 # Transition and Subtropical retain ST and all other observed clusters.
@@ -97,7 +97,11 @@ tests <- bind_rows(lapply(rda$nodes, function(x) x$terms))
 effects <- bind_rows(lapply(rda$nodes, function(x) x$effects))
 write_csv(tests, file.path(OUT_DIR, "node_RDA_predictor_tests_sequential_and_marginal.csv"))
 links <- effects |>
-  mutate(node = Group, environment = sub("_std$", "", predictor),
+  # IMPORTANT: anno_link() must target the exact column names used in
+  # node_matrix.  Build those names directly from the same Cluster and Region
+  # fields used for the centroid matrix rather than relying on Group naming.
+  mutate(node = paste(Cluster, Region, sep = "_"),
+         environment = sub("_std$", "", predictor),
          p.value = .data[[paste0("p_", ENV_LINK_TEST)]],
          effect_pct = unique_pct_total, test_used_for_plot = ENV_LINK_TEST)
 write_csv(links, file.path(OUT_DIR, "node_environment_links_all_unique_effects_abundance_weighted.csv"))
@@ -112,11 +116,17 @@ selected_links <- links |>
   mutate(link_rank = row_number()) |>
   ungroup() |>
   mutate(.row = unname(c(Temp = "Temperature", Sal = "Salinity", O2 = "Oxygen", Fluor = "Fluorescence")[environment]),
-         .col = node)
+         .col = node) |>
+  # FIX: anno_link() reads the link start/end from the FIRST TWO columns (as in
+  # script 11, where transmute() puts .row and .col first). Here they were the
+  # last columns, so the links pointed at Diel_group/Approach instead of nodes.
+  relocate(.row, .col)
 write_csv(selected_links, file.path(OUT_DIR, "node_environment_links_top2_significant_abundance_weighted.csv"))
 
 # 4. Calculate Pearson correlations and their reported p-values ----------------
-correlations <- rcorr(node_matrix, type = "pearson")
+# FIX: Hmisc::rcorr() needs a numeric matrix, not a data.frame (script 11 uses
+# as.matrix(node_matrix) for the same reason).
+correlations <- rcorr(as.matrix(node_matrix), type = "pearson")
 R <- correlations$r
 P <- correlations$P
 write.csv(R, file.path(OUT_DIR, "node_correlations_r_full_abundance_weighted.csv"))
@@ -145,6 +155,23 @@ vars <- nodes
 cluster_levels <- NODE_CLUSTER_LEVELS
 region_levels <- REGION_LEVELS
 env_links_top <- selected_links
+
+# anno_link() silently drops links whose .col value does not exactly match a
+# heatmap node.  Fail here instead so a naming mismatch can never produce a
+# link-free figure without explanation.
+unmatched_link_nodes <- setdiff(unique(env_links_top$.col), colnames(node_matrix))
+if (length(unmatched_link_nodes) > 0L) {
+  stop(
+    "Environmental-link targets do not match node_matrix columns: ",
+    paste(unmatched_link_nodes, collapse = ", ")
+  )
+}
+message("Environmental links selected for plotting: ", nrow(env_links_top))
+if (nrow(env_links_top) > 0L) {
+  print(env_links_top |>
+          select(Region, Cluster, environment, .row, .col, effect_pct, p.value))
+}
+
 link_size_upper <- max(c(LINK_LEGEND_BREAKS, selected_links$effect_pct))
 env_palette_full <- c(
   "Temperature (°C)" = "#E64B35", "Oxygen (μmol kg⁻¹)" = "#4DBBD5",
