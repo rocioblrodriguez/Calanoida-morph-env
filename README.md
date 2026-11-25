@@ -4,7 +4,7 @@
 
 Scripts used for the manuscript 
 
-* * ## Linking Morphology and Environment in Calanoid Copepods across the Northeast Pacific * *
+##  * * Linking Morphology and Environment in Calanoid Copepods across the Northeast Pacific * *
 ##
 ## Authors and acknowledgment
 Rocio B. Rodriguez-Perez<sup>1</sup>, Amy E. Maas<sup>1,2</sup>, Sakina-Dorothée Ayata<sup>3</sup>, Leocadio Blanco-Bercial<sup>1,2</sup>
