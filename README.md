@@ -17,7 +17,8 @@ This research was supported by the National Science Foundation under grants OCE-
 
 
 
-
+## Usage
+All analyses can be run using the file _00_run_all.R_ as source
 ```r
 source("R_Scripts/00_run_all.R")
 ```
