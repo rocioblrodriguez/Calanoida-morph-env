@@ -23,7 +23,7 @@ All analyses can be run using the file _00_run_all.R_ as source
 source("R_Scripts/00_run_all.R")
 ```
 
-Input paths and shared settings are defined in `R_Scripts/00_setup.R`.
+Input paths and shared settings are defined within `R_Scripts/00_setup.R`.
 Figures are exported as PNG, PDF, SVG, and EPS.
 ##
 ## License
