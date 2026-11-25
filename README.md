@@ -25,7 +25,7 @@ source("R_Scripts/00_run_all.R")
 Input paths and shared settings are defined in `R_Scripts/00_setup.R`.
 Figures are exported as PNG, PDF, SVG, and EPS.
 
-## ## License
+## License
 
 Creative Commons Attribution 4.0 International [[CC BY4.0](LICENSE)].
 
