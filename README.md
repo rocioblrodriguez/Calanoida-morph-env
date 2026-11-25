@@ -1,6 +1,10 @@
-# CHP1 revised workflow — Subarctic ST excluded
+# Linking Morphology and Environment in Calanoid Copepods
 
-Run from this project directory with:
+Scripts used for the manuscript 
+
+##"Linking Morphology and Environment in Calanoid Copepods across the Northeast Pacific"
+
+
 
 ```r
 source("R_Scripts/00_run_all.R")
