@@ -9,6 +9,10 @@ Scripts used for the manuscript
 
 ## Authors and acknowledgment
 Rocio B. Rodriguez-Perez<sup>1</sup>, Amy E. Maas<sup>1,2</sup>, Sakina-Dorothée Ayata<sup>3</sup>, Leocadio Blanco-Bercial<sup>1,2</sup>
+1. Arizona State University, Tempe, AZ, US 85287 
+2. Arizona State University - Bermuda Institute of Ocean Sciences; Saint George's, St. George's Parish, Bermuda
+3. 2 Sorbonne Universite, Laboratoire d’Océanographie et du Climat : Expérimentations et Approches Numériques, LOCEAN-IPSL, France
+
 
 
 
